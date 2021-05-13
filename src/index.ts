@@ -1,17 +1,10 @@
-import express from 'express'
-import morgan from 'morgan'
+import { DefaultController } from './controllers/default.controller'
+import { createServer, startServer } from './server'
 
-
-const app = express()
-app.use(express.json())
-app.use(morgan('dev'))
-
-const PORT = process.env.PORT || 6969
-
-app.use('/', (_, res) => {
-  res.status(404).send('NOT FOUND')
-})
-
-const server = app.listen(PORT, () => {
-  console.log(`App listening at http://localhost:${PORT}`)
-})
+startServer(
+  createServer({}, DefaultController),
+  6969
+)
+  .then(() => console.log('YAY'))
+  .catch(() => console.log('SHIT'))
+  .catch(() => console.log('whew!'))
