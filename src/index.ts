@@ -1,8 +1,16 @@
+import { PrismaClient } from '.prisma/client'
 import { DefaultController } from './controllers/default.controller'
+import { userController } from './controllers/users.controller'
 import { createServer, startServer } from './server'
 
+const prisma = new PrismaClient()
 startServer(
-  createServer({}, DefaultController),
+  createServer({
+    prisma
+  }, 
+  userController,
+  DefaultController
+),
   6969
 )
   .then(() => console.log('YAY'))
