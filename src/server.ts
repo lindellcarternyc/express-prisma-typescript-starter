@@ -17,7 +17,7 @@ export const createServer = (dependencies: ControllerDeps, ...controllers: Contr
   return app
 }
 
-export const startServer = async (app: express.Express, port: number | string) => {
+export const startServer = async ({ app, port }: { app: express.Express, port: number | string }) => {
   return app.listen(port, () => {
     console.log(`App listening on port=${port}`)
   })

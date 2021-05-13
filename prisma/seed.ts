@@ -9,7 +9,7 @@ const main = async () => {
     data: {
       email: 'email@email.com',
       username: 'lindell',
-      password: 'password123'
+      password: '$2y$12$sYpXl8QlkWvTkdgnfMeskuSJWLLqJGXsRafn2FrFVjBzYEzBW0SMK'
     }
   })
 
@@ -17,7 +17,7 @@ const main = async () => {
     data: {
       email: 'jason@email.com',
       username: 'jason.derulo',
-      password: 'password'
+      password: '$2y$12$sYpXl8QlkWvTkdgnfMeskuSJWLLqJGXsRafn2FrFVjBzYEzBW0SMK'
     }
   })
 }
