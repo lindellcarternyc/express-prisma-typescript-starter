@@ -1,4 +1,5 @@
-import { Router } from 'express'
+import { Router, Request } from 'express'
+import { authenticateJWT } from '../middleware/auth.middleware'
 import { Controller } from './types'
 
 export const userController: Controller = ({ prisma }) => {
@@ -22,12 +23,19 @@ export const userController: Controller = ({ prisma }) => {
     }
   })
 
-  router.delete('/users', async (req, res) => {
-    try {
-      await prisma.userRole.deleteMany({})
-      await prisma.user.deleteMany({})
+  router.delete('/users', authenticateJWT, async (req, res) => {
+    const user = (req as any).user as { role: string }
+    
+    try {  
+      if (user.role === 'admin') {
+        await prisma.userRole.deleteMany({})
+        await prisma.user.deleteMany({})
 
-      res.status(203).send('DELETED ALL USERS')
+        
+        res.status(203).send('DELETED ALL USERS')
+      } else {
+        res.status(401).send('Unauthorized')
+      }
     } catch (e) {
       console.log(e)
     }

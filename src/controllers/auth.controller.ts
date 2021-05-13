@@ -3,7 +3,7 @@ import * as yup from 'yup'
 import { validate } from 'express-yup'
 
 import { Controller } from './types'
-import { comparePasswords, encodePassword } from './utils/auth.utils'
+import { comparePasswords, createToken, encodePassword } from './utils/auth.utils'
 
 const registerSchema = yup.object().shape({
   body: yup.object().shape({
@@ -55,6 +55,13 @@ export const authController: Controller = ({ prisma }) => {
       const user = await prisma.user.findFirst({
         where: {
           username
+        },
+        include: {
+          roles: {
+            include: {
+              role: true
+            }
+          }
         }
       })
       
@@ -65,7 +72,19 @@ export const authController: Controller = ({ prisma }) => {
 
       const isValidPassword = await comparePasswords(password, user.password)
       if (isValidPassword) {
-        res.status(200).json({ user })
+
+        let role: string
+        if (user.roles.find(r => {
+          return r.role.name === 'admin'
+        })) {
+          role = 'admin'
+        } else {
+          role = 'user'
+        }
+
+        const token = createToken({ username: user.username, role })
+
+        res.status(200).json({ user, token: { token } })
       } else {
         res.status(401).send('Invalid username or password')
       }
