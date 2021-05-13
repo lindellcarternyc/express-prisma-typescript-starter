@@ -6,7 +6,15 @@ export const userController: Controller = ({ prisma }) => {
 
   router.get('/users', async (_, res) => {
     try {
-      const users = await prisma.user.findMany()
+      const users = await prisma.user.findMany({
+        include: {
+          roles: {
+            include: {
+              role: true
+            }
+          }
+        }
+      })
       res.status(200).json({ users })
     } catch (e) {
       console.log(e)
