@@ -34,5 +34,6 @@ model UserRole {
   roleId      Int
   role        Role    @relation(fields: [roleId], references: [id])
 
-  @@id([userId])
+  @@id([userId, roleId])
+  @@index([userId, roleId])
 }

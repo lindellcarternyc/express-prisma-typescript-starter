@@ -48,6 +48,7 @@ export const authController: Controller = ({ prisma }) => {
   })
 
   router.post('/login', validate(loginSchema), async (req, res) => {
+    console.log('/login')
     const { username, password } = req.body
 
     try {
@@ -56,19 +57,20 @@ export const authController: Controller = ({ prisma }) => {
           username
         }
       })
+      
+      if (user === null) {
+        res.status(401).send('Invalid username or password')
+        return
+      }
 
-      if (user !== null) {
-        const isValidPassword = await comparePasswords(password, user.password)
-        if (isValidPassword) {
-          res.status(200).json({ user })
-        }
+      const isValidPassword = await comparePasswords(password, user.password)
+      if (isValidPassword) {
+        res.status(200).json({ user })
       } else {
         res.status(401).send('Invalid username or password')
       }
-
-
     } catch (err) {
-      res.status(500).send('Internal Server Error')
+      throw err
     }
   })
   return {
